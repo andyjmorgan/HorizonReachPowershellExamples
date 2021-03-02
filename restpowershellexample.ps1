@@ -620,6 +620,7 @@ The Horizon reach server url, e.g. https://reach.domain.local:9443
 .EXAMPLE
 Get-HorizonReachUAGConfiguration -token $jwt -url $ReachURL -ID $uagid
 
+Get-HorizonReachUAGConfiguration -token $jwt -url $ReachURL -ID $uagid -ini
 .NOTES
 General notes
 #>
@@ -758,49 +759,6 @@ function Get-HorizonReachConnection(){
     )
     $baseURI = "$url/api/HorizonConnections"
     Invoke-RestMethod -method 'Get' -uri $baseURI -Headers (New-HorizonReachHeader -token $token) -ContentType 'application/json'
-}
-
-<#
-.SYNOPSIS
-This function will test a Horizon Connection to be added Horizon Reach.
-
-.DESCRIPTION
-This function will test a Horizon connection.
-
-.PARAMETER token
-The JWT token returned from the logon call or refresh call
-
-.PARAMETER url
-The Horizon reach server url, e.g. https://reach.domain.local:9443
-
-.PARAMETER ID
-(Optional) the ID of the item you wish to Get.
-
-.EXAMPLE
-Test-HorizonReachConnection -token $jwt -url $Reachurl -domain "domain.local" -username "usrname" -password "password!?" -connectionserver "https://connectionserver.domain.local"
-
-.NOTES
-General notes
-#>
-function Test-HorizonReachConnection(){
-    param(
-        [Parameter(Mandatory=$true)]$token,
-        [Parameter(Mandatory=$true)][string]$url,
-        [parameter(Mandatory=$true)][string]$ConnectionServer,
-        [parameter(Mandatory=$true)][string]$UserName,
-        [parameter(Mandatory=$true)][string]$Password,
-        [parameter(Mandatory=$true)][string]$Domain,
-        [string]$CertificateThumbprint
-    )
-    $baseURI = "$url/api/HorizonDiscovery"
-    $ConnectionObject = New-Object -TypeName psobject -Property @{
-        "ConnectionURL" = $ConnectionServer
-        "Username" = $UserName
-        "Password" = $Password
-        "Domain" = $Domain
-        "AcceptedServerThumbprint" = $CertificateThumbprint
-    }
-    Invoke-RestMethod -method 'Post' -uri $baseURI -Headers (New-HorizonReachHeader -token $token) -body ($ConnectionObject|ConvertTo-Json) -ContentType 'application/json'
 }
 
 <#
